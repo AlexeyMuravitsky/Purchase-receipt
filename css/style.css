@@ -102,6 +102,17 @@ h3 {
   background: #d8d8d8;
   font-size: 14px;
 }
+
+.th-item:hover {
+  color: #717f71;
+  transition: color 0.3s;
+}
+
+.th-item:active {
+  color: #076a02;
+  transition: color 0.3s;
+}
+
 .td-item {
   position: relative;
   text-align: center;
@@ -153,14 +164,21 @@ h3 {
 
 .th1-item {
   width: 225px;
+  cursor: pointer;
 }
 
 .th2-item {
   width: 100px;
+  cursor: pointer;
 }
 
 .th3-item {
   width: 100px;
+  cursor: pointer;
+}
+
+.th4-item {
+  cursor: pointer;
 }
 
 .total-price-td {

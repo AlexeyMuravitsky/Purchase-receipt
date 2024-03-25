@@ -12,28 +12,37 @@ title.classList.add("title_item");
 title.textContent = "Чек покупки";
 headerContainer.append(title);
 
-let productObject = [
-  // {
-  //   name: "Пельмени",
-  //   qt: 1,
-  //   price: 455,
-  // },
-  // {
-  //   name: "Масло",
-  //   qt: 1,
-  //   price: 120,
-  // },
-  // {
-  //   name: "Сметана",
-  //   qt: 3,
-  //   price: 55,
-  // },
-  // {
-  //   name: "Молоко",
-  //   qt: 2,
-  //   price: 47,
-  // },
+let productObject = [];
+
+let productObject2 = [
+  {
+    name: "Пельмени",
+    qt: 1,
+    price: 455,
+  },
+  {
+    name: "Масло",
+    qt: 1,
+    price: 120,
+  },
+  {
+    name: "Сметана",
+    qt: 3,
+    price: 55,
+  },
+  {
+    name: "Молоко",
+    qt: 2,
+    price: 47,
+  },
 ];
+
+if (localStorage.getItem("productList") === null) {
+  productObject = localStorage.setItem(
+    "productList",
+    JSON.stringify(productObject2)
+  );
+}
 
 productObject = JSON.parse(localStorage.getItem("productList")) || [];
 
@@ -41,7 +50,7 @@ productObject = JSON.parse(localStorage.getItem("productList")) || [];
 //   productObject = [];
 // }
 
-console.log(productObject);
+// console.log(productObject);
 
 function getInput(text, type) {
   let input = document.createElement("input");
@@ -169,6 +178,7 @@ function getModal(text, placeholder, type) {
 }
 container.append(modalAddAlert);
 ///////////////////////
+let dir = true;
 
 // Верстка таблицы
 function getTable() {
@@ -186,15 +196,20 @@ function getTable() {
   let th1 = getThItem();
   th1.textContent = "Наименование товара";
   th1.classList.add("th1-item");
+  th1.id = "nameProduct";
   let th2 = getThItem();
   th2.textContent = "Кол-во";
   th2.classList.add("th2-item");
+  th2.id = "qtProduct";
   let th3 = getThItem();
   th3.classList.add("th3-item");
+  th3.id = "priceProduct";
   th3.textContent = "Цена";
   let th4 = getThItem();
   th4.textContent = "Общая стоимость";
   th4.classList.add("th4-item");
+  th4.id = "totalProduct";
+
   let th5 = getThItem();
 
   let tFoot = document.createElement("tfoot");
@@ -231,6 +246,8 @@ function getTr(object, index) {
 
   let totalPriceProduct = stringQt.textContent * stringPrice.textContent;
   stringTotalPrice.textContent = totalPriceProduct;
+
+  // console.log(totalPriceProduct);
 
   let editBtnName = getBtn("изменить");
   editBtnName.classList.add("edit-btn");
@@ -278,11 +295,10 @@ function getTr(object, index) {
     let modalspan = document.getElementById("spanId");
     modalBtnImp.value = "";
     modalBtnSave.addEventListener("click", function () {
-      console.log("dgdf");
       if (modalBtnImp.value == "") {
         modalspan.textContent = "Введите количество!";
       } else {
-        object.qt = modalBtnImp.value;
+        object.qt = Math.abs(modalBtnImp.value);
         modalWindow.remove();
         render(productObject);
       }
@@ -299,11 +315,10 @@ function getTr(object, index) {
     let modalspan = document.getElementById("spanId");
     modalBtnImp.value = "";
     modalBtnSave.addEventListener("click", function () {
-      console.log("dgdf");
       if (modalBtnImp.value == "") {
         modalspan.textContent = "Нужно заполнить поле";
       } else {
-        object.price = modalBtnImp.value;
+        object.price = Math.abs(modalBtnImp.value);
         modalWindow.remove();
         render(productObject);
       }
@@ -349,8 +364,8 @@ addBtn.onclick = function (event) {
   } else {
     let newProduct = {
       name: nameInput.value,
-      qt: qtInput.value,
-      price: priceInput.value,
+      qt: Math.abs(qtInput.value),
+      price: Math.abs(priceInput.value),
     };
 
     productObject.push(newProduct);
@@ -378,8 +393,89 @@ footerBlock.append(footerSpan, footerSpanTotal);
 container.append(headerContainer, tableContainer);
 document.body.append(container);
 
-console.log(productObject.length);
+// ФУНКЦИЯ СОРТИРОВКИ
+function sortElem(arr, prop, dir = false) {
+  let result = arr.sort(function (a, b) {
+    let dirStatus = +a[prop] < +b[prop];
+    //
+    if (dir == true) {
+      dirStatus = +a[prop] > +b[prop];
+    }
+    //
+    if (dirStatus == true) {
+      return -1;
+    }
+  });
 
+  return result;
+}
+
+function sortElemName(arr, prop, dir = false) {
+  let result = arr.sort(function (a, b) {
+    let dirStatus = a[prop] < b[prop];
+    //
+    if (dir == true) {
+      dirStatus = a[prop] > b[prop];
+    }
+    //
+    if (dirStatus == true) {
+      return -1;
+    }
+  });
+
+  return result;
+}
+
+// let each = document.getElementsByClassName("total-price-td");
+// console.log(each);
+
+// ОБРАБОТЧИКИ СОБЫТИЯ НА СТОЛБЦЫ
+let btnName = document.getElementById("nameProduct");
+let btnQt = document.getElementById("qtProduct");
+let btnPrice = document.getElementById("priceProduct");
+let btnTotal = document.getElementById("totalProduct");
+
+btnName.addEventListener(
+  "click",
+
+  function () {
+    dir = !dir;
+    productObject = sortElemName(productObject, "name", dir);
+    render(productObject);
+  }
+);
+
+btnQt.addEventListener(
+  "click",
+
+  function () {
+    dir = !dir;
+    productObject = sortElem(productObject, "qt", dir);
+    render(productObject);
+  }
+);
+
+btnPrice.addEventListener(
+  "click",
+
+  function () {
+    dir = !dir;
+    productObject = sortElem(productObject, "price", dir);
+    render(productObject);
+  }
+);
+
+btnTotal.addEventListener(
+  "click",
+
+  function () {
+    dir = !dir;
+    productObject = sortElem(productObject, "total", dir);
+    render(productObject);
+  }
+);
+
+/////////////////
 function render(productObject) {
   userTable.innerHTML = "";
 
@@ -391,8 +487,16 @@ function render(productObject) {
     let productItem = getTr(productObject[i], i);
     userTable.append(productItem);
 
-    totalPrice = totalPrice + productObject[i].qt * productObject[i].price;
+    let totalStr = productObject[i].qt * productObject[i].price;
+
+    totalPrice = totalPrice + totalStr;
   }
+
+  for (let i = 0; i < productObject.length; i++) {
+    productObject[i]["total"] = productObject[i].qt * productObject[i].price;
+  }
+
+  console.log(productObject);
 
   footerSpanTotal.textContent = `${totalPrice} руб.`;
 
@@ -438,7 +542,7 @@ document.body.addEventListener("click", function (event) {
 
 // клик вне блока для Закрыть
 document.body.addEventListener("click", function (event) {
-  console.log(event);
+  // console.log(event);
   let sss = document.getElementById("modal");
   if (
     event._isclick === true ||
