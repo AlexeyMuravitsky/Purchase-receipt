@@ -12,6 +12,21 @@ title.classList.add("title_item");
 title.textContent = "Чек покупки";
 headerContainer.append(title);
 
+let topWrap = document.createElement("div");
+topWrap.classList.add("top-wrap", "flex");
+headerContainer.append(topWrap);
+
+let searchImp = document.createElement("input");
+searchImp.classList.add("search-imp");
+searchImp.id = "btnSearch";
+searchImp.placeholder = "Поиск по товарам";
+
+let test = document.createElement("span");
+test.classList.add("test");
+test.textContent = "";
+test.id = "test";
+topWrap.append(title, test, searchImp);
+
 let productObject = [];
 
 let productObject2 = [
@@ -331,6 +346,7 @@ function getTr(object, index) {
   removeBtn.classList.add("del-btn");
 
   removeBtn.onclick = function () {
+    searchImp.value = "";
     productObject.splice(index, 1);
     render(productObject);
   };
@@ -426,14 +442,13 @@ function sortElemName(arr, prop, dir = false) {
   return result;
 }
 
-// let each = document.getElementsByClassName("total-price-td");
-// console.log(each);
-
 // ОБРАБОТЧИКИ СОБЫТИЯ НА СТОЛБЦЫ
 let btnName = document.getElementById("nameProduct");
 let btnQt = document.getElementById("qtProduct");
 let btnPrice = document.getElementById("priceProduct");
 let btnTotal = document.getElementById("totalProduct");
+
+// let btnSearch = document.getElementById("btnSearch");
 
 btnName.addEventListener(
   "click",
@@ -475,6 +490,45 @@ btnTotal.addEventListener(
   }
 );
 
+// btnSearch.addEventListener(
+//   "click",
+
+//   function () {
+//     console.log("object");
+//   }
+// );
+
+// ФИЛЬТРАЦИЯ(ПОИСК ПО ТОВАРАМ)
+
+// searchImp.value = "ана";
+let filterArr = [];
+function filter(arr, val) {
+  for (let elem of arr) {
+    if (elem.name.toLowerCase().includes(val.value.toLowerCase()) == true) {
+      filterArr.push(elem);
+    }
+  }
+  console.log(filterArr);
+  return filterArr;
+}
+
+// ИНПУТ НА ПОИСК
+btnSearch.addEventListener("input", out);
+
+function out() {
+  filterArr = [];
+  filter(productObject, searchImp);
+  render(filterArr);
+
+  if (filterArr.length < 1) {
+    footerSpan.textContent = "Такого товара нет";
+    footerSpan.classList.add("footer-empty");
+    footerBlock.classList.add("footerBlock-item-empty");
+
+    footerSpanTotal.textContent = "";
+  }
+}
+
 /////////////////
 function render(productObject) {
   userTable.innerHTML = "";
@@ -496,7 +550,7 @@ function render(productObject) {
     productObject[i]["total"] = productObject[i].qt * productObject[i].price;
   }
 
-  console.log(productObject);
+  // console.log(productObject);
 
   footerSpanTotal.textContent = `${totalPrice} руб.`;
 

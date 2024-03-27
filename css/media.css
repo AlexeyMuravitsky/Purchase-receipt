@@ -58,4 +58,16 @@
     align-self: start;
     margin-bottom: 10px;
   }
+
+  .title_item {
+    display: block;
+  }
+
+  .top-wrap {
+    display: block;
+  }
+
+  .search-imp {
+    margin-bottom: 10px;
+  }
 }

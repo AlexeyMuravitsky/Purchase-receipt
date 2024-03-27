@@ -19,7 +19,25 @@ h3 {
   padding: 5px;
 }
 
+.flex {
+  display: flex;
+}
+
+.top-wrap {
+  max-width: 800px;
+  justify-content: space-between;
+}
+
+.search-imp {
+  align-self: center;
+  width: 182px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border-color: #c1b1b1;
+}
+
 .title_item {
+  display: inline-block;
   font-weight: 500;
   margin-bottom: 10px;
 }
@@ -105,7 +123,7 @@ h3 {
 
 .th-item:hover {
   color: #717f71;
-  transition: color 0.3s;
+  transition: visability 0.3s;
 }
 
 .th-item:active {
@@ -302,4 +320,9 @@ h3 {
 .modal-alert-img {
   height: 35px;
   width: 35px;
+}
+
+.search-imp {
+  background-color: #dedede;
+  border: none;
 }
